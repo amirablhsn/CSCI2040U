@@ -68,3 +68,43 @@ def delete(id):
             writer.writerows(data)
 
     return success
+
+def edit_data(id, new_name, new_description):
+
+
+    updated = False
+    temp_file = csv_file + '.tmp'
+
+
+    if not os.path.isfile(csv_file) or os.path.getsize(csv_file) == 0:
+        print("Database is missing or empty")
+        return False
+    # Open the CSV file for reading and create a temporary file for writing
+    with open(csv_file, mode='r', newline='', encoding='utf-8') as csvfile, \
+        open(temp_file, mode='w', newline='', encoding='utf-8') as tempfile:
+        reader = csv.reader(csvfile)
+        writer = csv.writer(tempfile)
+
+
+        header = next(reader)
+        writer.writerow(header)
+
+
+        for row in reader:
+            if row[0] == str(id):  # Check if the ID matches
+                row[1] = new_name
+                row[2] = new_description
+                updated = True
+            writer.writerow(row)
+
+
+    # Replace the original file with the temporary file
+    if updated:
+        os.replace(temp_file, csv_file)
+    else:
+        # If no update occurred, delete the temp file
+        if os.path.isfile(temp_file):
+            os.remove(temp_file)
+
+
+    return updated
