@@ -1,7 +1,7 @@
 import csv
 import os
 
-csv_file = "./catalog/data/items.csv"
+csv_file = "./items.csv"
 field_names = ["ID", "Name", "Description"]
 
 def generate_dummy_data(entries=5):
