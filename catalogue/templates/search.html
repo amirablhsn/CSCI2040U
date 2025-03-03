@@ -1,0 +1,41 @@
+{% extends "base.html" %} {% block title %} Home Page {% endblock %}
+{% block content %}
+<h1>Welcome!</h1>
+<form method="GET" action="{% url 'search' %}">
+    <div class="mb-3">
+      <label for="catalogue-search" class="form-label">Search</label>
+      <input type="search" name="catalogue-search" class="form-control" id="catalogue-search" aria-describedby="search-vehicles" value="{{ query }}">
+      <div id="search-vehicles" class="form-text">Look through our catalogue!</div>
+    </div>
+    <button type="submit" class="btn btn-primary">Submit</button>
+  </form>
+  
+  {% if vehicles %}
+    <h2>Search Result</h2>
+    <table class="table">
+        <thead>
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">Name</th>
+            <th scope="col">Make</th>
+            <th scope="col">Model</th>
+            <th scope="col">Year</th>
+        </tr>
+        </thead>
+        {% for vehicle in vehicles %}
+                <tr>
+                    <th scope="row">{{ forloop.counter }}</th>
+                    <td>{{ vehicle.name }}</td>
+                    <td>{{ vehicle.make }}</td>
+                    <td>{{ vehicle.model }}</td>
+                    <td>{{ vehicle.year }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+        {% if query != "" %}
+            <p>No results found  for "{{ query }}"</p>
+        {% endif %}
+    {% endif %}
+{% endblock %}
