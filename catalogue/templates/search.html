@@ -7,8 +7,9 @@
       <input type="search" name="catalogue-search" class="form-control" id="catalogue-search" aria-describedby="search-vehicles" value="{{ query }}">
       <div id="search-vehicles" class="form-text">Look through our catalogue!</div>
     </div>
-    <button type="submit" class="btn btn-primary">Submit</button>
-  </form>
+    <button type="search" class="btn btn-primary">Search</button>
+</form>
+<a href="{% url 'add' %}" class="btn btn-primary">Add Vehicle</a>
   
   {% if vehicles %}
     <h2>Search Result</h2>
@@ -16,18 +17,18 @@
         <thead>
         <tr>
             <th scope="col">#</th>
-            <th scope="col">Name</th>
             <th scope="col">Make</th>
             <th scope="col">Model</th>
+            <th scope="col">Trim</th>
             <th scope="col">Year</th>
         </tr>
         </thead>
         {% for vehicle in vehicles %}
                 <tr>
                     <th scope="row">{{ forloop.counter }}</th>
-                    <td>{{ vehicle.name }}</td>
                     <td>{{ vehicle.make }}</td>
                     <td>{{ vehicle.model }}</td>
+                    <td>{{ vehicle.trim }}</td>
                     <td>{{ vehicle.year }}</td>
                 </tr>
             {% endfor %}

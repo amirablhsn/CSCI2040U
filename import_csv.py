@@ -28,11 +28,9 @@ def import_csv():
             # Handle missing fields
             cylinders = int(row['cylinders']) if row['cylinders'].isdigit() else 4
             price = round(float(row['price']) if row['price'].replace('.', '', 1).isdigit() else 0.00, 2)
-            mileage = int(row['mileage']) if row['mileage'].isdigit() else 0
             doors = int(row['doors']) if row['doors'].isdigit() else 4
             
             Vehicle.objects.create(
-                name=row['name'],
                 description=row['description'],
                 make=row['make'],
                 model=row['model'],
@@ -42,7 +40,6 @@ def import_csv():
                 engine=row['engine'],
                 cylinders=cylinders,
                 fuel=row['fuel'],
-                mileage=mileage,
                 transmission=row['transmission'],
                 trim=row['trim'],
                 body=row['body'],
