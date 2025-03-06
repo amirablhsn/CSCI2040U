@@ -5,9 +5,9 @@ from .models import Vehicle
 class VehicleForm(forms.ModelForm):
     class Meta:
         model = Vehicle
-        fields  = ["make","model","trim","type","year","price",
+        fields  = ["make","model","trim","body","year","price", "image",
                    "description","engine", "cylinders", "fuel", "transmission",  
-                   "body", "doors", "exterior_color", "interior_color", "drivetrain"]
+                   "type", "doors", "exterior_color", "interior_color", "drivetrain"]
         # https://docs.djangoproject.com/en/5.1/ref/forms/widgets/
         widgets = {
             "make": forms.TextInput(attrs={"class": "form-control"}),
@@ -15,6 +15,7 @@ class VehicleForm(forms.ModelForm):
             "type": forms.TextInput(attrs={"class": "form-control"}),
             "year": forms.NumberInput(attrs={"class": "form-control"}),
             "price": forms.NumberInput(attrs={"class": "form-control"}),
+            "image": forms.ClearableFileInput(attrs={"class": "form-control"}),
             "description": forms.Textarea(attrs={"class": "form-control"}),
             "engine": forms.TextInput(attrs={"class": "form-control"}),
             "cylinders": forms.NumberInput(attrs={"class": "form-control"}),
