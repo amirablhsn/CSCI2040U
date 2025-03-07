@@ -1,12 +1,13 @@
 {% extends "base.html" %} {% block title %} Home Page {% endblock %}
 {% block content %}
 <div class="container" style="margin-top: 50px">
+   
     <h1>Welcome!</h1>
     <form method="GET" action="{% url 'search' %}">
         <div class="mb-3">
         <label for="catalogue-search" class="form-label">Search</label>
         <input type="search" name="catalogue-search" class="form-control" id="catalogue-search" aria-describedby="search-vehicles" value="{{ query }}">
-        <div id="search-vehicles" class="form-text">Look through our catalogue!</div>
+        <div id="search-vehicles" class="form-text" style="color: white;">Look through our catalogue!</div>
         </div>
         <button type="search" class="btn btn-primary">Search</button>
         <a href="{% url 'add' %}" class="btn btn-primary">Add Vehicle</a>
