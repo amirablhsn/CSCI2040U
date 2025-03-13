@@ -7,6 +7,7 @@ urlpatterns = [
     path("", views.search, name="search"),
     path("add/", views.add, name="add"),
     path("vehicle/<int:id>/", views.details, name="details"),
+    path('edit/<int:id>/', views.edit, name='edit'),
 ]
 
 if settings.DEBUG:

@@ -36,3 +36,17 @@ def details(request, id):
     else:
         imageUrl = '/media/assets/sample3.png'
     return render(request, "details.html", {"vehicle": vehicle, "imageUrl": imageUrl})
+
+
+def edit(request, id):
+    vehicle = get_object_or_404(Vehicle, id=id)
+    
+    if request.method == "POST":
+        form = VehicleForm(request.POST, request.FILES, instance=vehicle)
+        if form.is_valid():
+            form.save()
+            return HttpResponseRedirect(reverse('details', args=[vehicle.id]))
+    else:
+        form = VehicleForm(instance=vehicle)
+
+    return render(request, "edit.html", {"form": form, "vehicle": vehicle})
