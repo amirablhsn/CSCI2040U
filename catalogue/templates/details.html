@@ -39,8 +39,27 @@
         
             </div>
         </div>
-
-    </div>
+        <button type="button" class="btn btn-danger mx-auto mt-4"  data-bs-toggle="modal" data-bs-target="#deleteModal">Delete Vehicle</button>
+        <div class="modal" tabindex="-1" role="dialog" id="deleteModal">
+            <div class="modal-dialog" role="document">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title">Confrim Deletion</h5>
+                </div>
+                <div class="modal-body">
+                  <p>Are you sure you want to delete "{{ vehicle.make }} {{ vehicle.model }}"?</p>
+                </div>
+                <div class="modal-footer">
+                    <form method="POST" action="{% url 'delete' vehicle.id %}">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-danger">Delete</button>
+                    </form>
+                  <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                </div>
+              </div>
+            </div>
+          </div>
+    </div>  
     <a href="{% url 'edit' vehicle.id %}">Edit Vehicle</a>
 </div>
 {% endblock %}
