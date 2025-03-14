@@ -1,10 +1,12 @@
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 from .models import Vehicle
 from django.db.models import Q, Value
 from django.db.models.functions import Concat
 from .forms import VehicleForm
 from django.http import HttpResponseRedirect
 from django.urls import reverse
+from django.contrib import messages
+
 
 # Create your views here.
 def search(request):
@@ -50,3 +52,11 @@ def edit(request, id):
         form = VehicleForm(instance=vehicle)
 
     return render(request, "edit.html", {"form": form, "vehicle": vehicle})
+
+def delete(request, id):
+    vehicle= get_object_or_404(Vehicle, id=id)
+    if request.method == "POST":
+        vehicle.delete()
+        messages.success(request, f'"{vehicle.make} {vehicle.model}" has been deleted from the catalogue.')
+        return redirect("/")
+    return render(request, "details.html", {"vehicle": vehicle})
