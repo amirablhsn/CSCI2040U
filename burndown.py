@@ -1,21 +1,23 @@
 import matplotlib.pyplot as plt
 
-# Simulating an in-progress burn down chart for a 14-day sprint
-in_progress_days = list(range(14))  # Full 14 days
-in_progress_story_points = [12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0, 0]  # Adjusted progress for 12 board items
-ideal_in_progress_story_points = [12 - (12/13) * day for day in in_progress_days]  # Ideal trend line for 14-day sprint
+# Define time points (days) for iterations
+days = list(range(1, 29))  # 28-day iteration
 
-# Plotting the in-progress burn down chart
-plt.figure(figsize=(8,5))
-plt.plot(in_progress_days, in_progress_story_points, marker='o', linestyle='-', color='red', label='Actual Progress')
-plt.plot(in_progress_days, ideal_in_progress_story_points, linestyle='--', color='blue', label='Ideal Progress')
+# Ideal burndown line (evenly distributing 12 tasks over 28 days)
+ideal_tasks_remaining = [12 - (i * 12 / 28) for i in range(28)]
+
+# Actual burndown data based on the user's progress
+actual_tasks_remaining = [12] * 7 + [9] * 7 + [8] + [8] * 13  # Updated with given progress
+
+# Plot the burndown chart
+plt.figure(figsize=(10, 5))
+plt.plot(days, ideal_tasks_remaining, label="Ideal Burndown", linestyle="dashed", color="blue")
+plt.plot(days, actual_tasks_remaining, label="Actual Burndown", marker="o", color="red")
 
 # Labels and title
 plt.xlabel("Days")
-plt.ylabel("Story Points Remaining")
-plt.title("In-Progress Burn Down Chart (14-Day Sprint)")
+plt.ylabel("Total Tasks")
+plt.title("Burndown Chart for School Project")
 plt.legend()
 plt.grid(True)
-
-# Show plot
 plt.show()
