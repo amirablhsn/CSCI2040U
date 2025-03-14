@@ -39,7 +39,10 @@
         
             </div>
         </div>
-        <button type="button" class="btn btn-danger mx-auto mt-4"  data-bs-toggle="modal" data-bs-target="#deleteModal">Delete Vehicle</button>
+        <div class="d-flex justify-content-center mt-4">
+          <button type="button" class="btn btn-danger mx-2" data-bs-toggle="modal" data-bs-target="#deleteModal">Delete Vehicle</button>
+          <a href="{% url 'edit' vehicle.id %}" class="btn btn-primary">Edit Vehicle</a>
+        </div>
         <div class="modal" tabindex="-1" role="dialog" id="deleteModal">
             <div class="modal-dialog" role="document">
               <div class="modal-content">
@@ -60,6 +63,5 @@
             </div>
           </div>
     </div>  
-    <a href="{% url 'edit' vehicle.id %}">Edit Vehicle</a>
 </div>
 {% endblock %}
