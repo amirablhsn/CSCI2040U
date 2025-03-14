@@ -1,4 +1,5 @@
 from django import forms
+from django.core.exceptions import ValidationError
 from .models import Vehicle
 
 # https://docs.djangoproject.com/en/5.1/topics/forms/modelforms/#modelform
@@ -28,3 +29,42 @@ class VehicleForm(forms.ModelForm):
             "interior_color": forms.TextInput(attrs={"class": "form-control"}),
             "drivetrain": forms.TextInput(attrs={"class": "form-control"}),
         }
+
+    def clean_make(self):
+        make = self.cleaned_data.get("make")
+        return make.title() if make else make
+    
+    def clean_model(self):
+        model = self.cleaned_data.get("model")
+        return model.title() if model else model
+    
+    def clean_price(self):
+        price = self.cleaned_data.get("price")
+        if price < 0:
+            raise ValidationError("Price cannot be negative.")
+        return price
+    
+    def clean_year(self):
+        year = self.cleaned_data.get("year")
+        if year < 0:
+            raise ValidationError("Year cannot be negative.")
+        return year
+    
+    def clean_image(self):
+        image = self.cleaned_data.get("image")
+        if image:
+            if not image.name.lower().endswith((".jpg", ".jpeg", ".png", ".webp")):
+                raise ValidationError("Only JPG, JPEG, PNG, and WEBP formats are allowed.")
+        return image
+    
+    def clean_cylinders(self):
+        cylinders = self.cleaned_data.get("cylinders")
+        if cylinders is not None and cylinders < 0:
+            raise ValidationError("Cylinders must be a positive integer.")
+        return cylinders
+    
+    def clean_doors(self):
+        doors = self.cleaned_data.get("doors")
+        if doors is not None and doors < 1:
+            raise ValidationError("Doors must be at least 1.")
+        return doors
