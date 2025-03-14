@@ -17,7 +17,7 @@ plt.plot(days, actual_tasks_remaining, label="Actual Burndown", marker="o", colo
 # Labels and title
 plt.xlabel("Days")
 plt.ylabel("Total Tasks")
-plt.title("Burndown Chart for School Project")
+plt.title("Burndown Chart for 2 week iteration")
 plt.legend()
 plt.grid(True)
 plt.show()
