@@ -1,12 +1,10 @@
-from django.shortcuts import render, get_object_or_404, redirect
+from django.shortcuts import render, get_object_or_404
 from .models import Vehicle
 from django.db.models import Q, Value
 from django.db.models.functions import Concat
 from .forms import VehicleForm
 from django.http import HttpResponseRedirect
 from django.urls import reverse
-from django.contrib import messages
-
 
 # Create your views here.
 def search(request):
@@ -19,6 +17,35 @@ def search(request):
 
 
     return render(request, "search.html", {"vehicles" : vehicles, "query" : query})
+
+def filter(request):
+    """Filters vehicles based on request parameters."""
+    vehicles = Vehicle.objects.all()
+
+    # Get filter parameters from GET request
+    make = request.GET.get("make", "")
+    model = request.GET.get("model", "")
+    year_min = request.GET.get("year_min", "")
+    year_max = request.GET.get("year_max", "")
+    price_min = request.GET.get("price_min", "")
+    price_max = request.GET.get("price_max", "")
+
+    # Apply filters
+    if make:
+        vehicles = vehicles.filter(make__icontains=make)
+    if model:
+        vehicles = vehicles.filter(model__icontains=model)
+    if year_min:
+        vehicles = vehicles.filter(year__gte=year_min)
+    if year_max:
+        vehicles = vehicles.filter(year__lte=year_max)
+    if price_min:
+        vehicles = vehicles.filter(price__gte=price_min)
+    if price_max:
+        vehicles = vehicles.filter(price__lte=price_max)
+
+    return render(request, "filter.html", {"vehicles": vehicles})
+
 
 # https://docs.djangoproject.com/en/5.1/topics/forms/
 def add(request):
@@ -53,6 +80,7 @@ def edit(request, id):
 
     return render(request, "edit.html", {"form": form, "vehicle": vehicle})
 
+# function to delete an existing vehicle
 def delete(request, id):
     vehicle= get_object_or_404(Vehicle, id=id)
     if request.method == "POST":

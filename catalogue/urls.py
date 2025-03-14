@@ -5,6 +5,7 @@ from django.conf.urls.static import static
 
 urlpatterns = [
     path("", views.search, name="search"),
+    path("filter/", views.filter, name="filter"),
     path("add/", views.add, name="add"),
     path("vehicle/<int:id>/", views.details, name="details"),
     path('edit/<int:id>/', views.edit, name='edit'),
