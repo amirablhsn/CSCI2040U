@@ -37,7 +37,7 @@ def details(request, id):
         imageUrl = '/media/assets/sample3.png'
     return render(request, "details.html", {"vehicle": vehicle, "imageUrl": imageUrl})
 
-
+# function for editing an existing vehicle
 def edit(request, id):
     vehicle = get_object_or_404(Vehicle, id=id)
     
