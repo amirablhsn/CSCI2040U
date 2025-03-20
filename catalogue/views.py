@@ -7,18 +7,24 @@ from django.http import HttpResponseRedirect
 from django.urls import reverse
 from django.contrib import messages
 from django.shortcuts import redirect
+from django.core.paginator import Paginator
 
 # Create your views here.
 def search(request):
     query = request.GET.get("catalogue-search", "")
-    vehicles = []
+    vehicles = Vehicle.objects.all()
+
     if query:
-        vehicles = Vehicle.objects.annotate(
+        vehicles = vehicles.annotate(
             combined=Concat("make", Value(" "), "model", Value(" "), "trim")
-            ).filter(combined__icontains=query)
+        ).filter(combined__icontains=query)
 
+    # Pagination: Show 21 vehicles per page
+    paginator = Paginator(vehicles, 21)
+    page_number = request.GET.get("page")
+    vehicles_page = paginator.get_page(page_number)
 
-    return render(request, "search.html", {"vehicles" : vehicles, "query" : query})
+    return render(request, "search.html", {"vehicles": vehicles_page, "query": query})
 
 def filter(request):
     """Filters vehicles based on request parameters."""
