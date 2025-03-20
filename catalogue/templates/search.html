@@ -23,7 +23,7 @@
                         {% if vehicle.image %}
                             <img src="{{ vehicle.image.url }}" class="card-img-top" alt="{{ vehicle.make }} {{ vehicle.model }}">
                         {% else %}
-                            <img src="/media/assets/sample3.png" class="card-img-top" alt="No Image Available">
+                            <img src="/media/assets/default.png" class="card-img-top" alt="No Image Available">
                         {% endif %}
                         <div class="card-body">
                             <h5 class="card-title">{{ vehicle.make }} {{ vehicle.model }} ({{ vehicle.year }})</h5>
