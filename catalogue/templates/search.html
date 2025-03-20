@@ -1,46 +1,43 @@
-{% extends "base.html" %} {% block title %} Home Page {% endblock %}
+{% extends "base.html" %} 
+{% block title %} Search Results {% endblock %}
 {% block content %}
 <div class="container" style="margin-top: 50px">
-   
     <h1>Welcome!</h1>
     <form method="GET" action="{% url 'search' %}">
         <div class="mb-3">
-        <label for="catalogue-search" class="form-label">Search</label>
-        <input type="search" name="catalogue-search" class="form-control" id="catalogue-search" aria-describedby="search-vehicles" value="{{ query }}">
-        <div id="search-vehicles" class="form-text" style="color: white;">Look through our catalogue!</div>
+            <label for="catalogue-search" class="form-label">Search</label>
+            <input type="search" name="catalogue-search" class="form-control" id="catalogue-search" aria-describedby="search-vehicles" value="{{ query }}">
+            <div id="search-vehicles" class="form-text" style="color: white;">Look through our catalogue!</div>
         </div>
-        <button type="search" class="btn btn-primary">Search</button>
+        <button type="submit" class="btn btn-primary">Search</button>
         <a href="{% url 'add' %}" class="btn btn-primary">Add Vehicle</a>
         <a href="{% url 'filter' %}" class="btn btn-primary">Filter</a>
     </form>
 
-  
-  {% if vehicles %}
-    <h2>Search Result</h2>
-    <table class="table">
-        <thead>
-        <tr>
-            <th scope="col">#</th>
-            <th scope="col">Make</th>
-            <th scope="col">Model</th>
-            <th scope="col">Trim</th>
-            <th scope="col">Year</th>
-        </tr>
-        </thead>
-        {% for vehicle in vehicles %}
-                <tr onclick="window.location='{% url 'details' vehicle.id %}';" style="cursor: pointer">
-                    <th scope="row">{{ forloop.counter }}</th>
-                    <td>{{ vehicle.make }}</td>
-                    <td>{{ vehicle.model }}</td>
-                    <td>{{ vehicle.trim }}</td>
-                    <td>{{ vehicle.year }}</td>
-                </tr>
+    {% if vehicles %}
+        <h2>Search Results</h2>
+        <div class="row">
+            {% for vehicle in vehicles %}
+                <div class="col-md-4 mb-4">
+                    <div class="card">
+                        {% if vehicle.image %}
+                            <img src="{{ vehicle.image.url }}" class="card-img-top" alt="{{ vehicle.make }} {{ vehicle.model }}">
+                        {% else %}
+                            <img src="/media/assets/sample3.png" class="card-img-top" alt="No Image Available">
+                        {% endif %}
+                        <div class="card-body">
+                            <h5 class="card-title">{{ vehicle.make }} {{ vehicle.model }} ({{ vehicle.year }})</h5>
+                            <p class="card-text">Trim: {{ vehicle.trim }}</p>
+                            <p class="card-text">Price: ${{ vehicle.price }}</p>
+                            <a href="{% url 'details' vehicle.id %}" class="btn btn-secondary">View Details</a>
+                        </div>
+                    </div>
+                </div>
             {% endfor %}
-        </tbody>
-    </table>
+        </div>
     {% else %}
         {% if query != "" %}
-            <p>No results found  for "{{ query }}"</p>
+            <p>No results found for "{{ query }}"</p>
         {% endif %}
     {% endif %}
 </div>

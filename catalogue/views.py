@@ -24,6 +24,12 @@ def filter(request):
     """Filters vehicles based on request parameters."""
     vehicles = Vehicle.objects.all()
 
+    # Get distinct values for dropdowns
+    makes = Vehicle.objects.values_list("make", flat=True).distinct().order_by("make")
+    models = Vehicle.objects.values_list("model", flat=True).distinct().order_by("model")
+    years = Vehicle.objects.values_list("year", flat=True).distinct().order_by("-year")  # Sorted from newest to oldest
+    prices = Vehicle.objects.values_list("price", flat=True).distinct().order_by("price")
+
     # Get filter parameters from GET request
     make = request.GET.get("make", "")
     model = request.GET.get("model", "")
@@ -34,9 +40,9 @@ def filter(request):
 
     # Apply filters
     if make:
-        vehicles = vehicles.filter(make__icontains=make)
+        vehicles = vehicles.filter(make=make)
     if model:
-        vehicles = vehicles.filter(model__icontains=model)
+        vehicles = vehicles.filter(model=model)
     if year_min:
         vehicles = vehicles.filter(year__gte=year_min)
     if year_max:
@@ -46,7 +52,14 @@ def filter(request):
     if price_max:
         vehicles = vehicles.filter(price__lte=price_max)
 
-    return render(request, "filter.html", {"vehicles": vehicles})
+    return render(request, "filter.html", {
+        "vehicles": vehicles,
+        "makes": makes,
+        "models": models,
+        "years": years,
+        "prices": prices
+    })
+
 
 
 # https://docs.djangoproject.com/en/5.1/topics/forms/
