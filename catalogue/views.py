@@ -33,7 +33,7 @@ def filter(request):
     # Get distinct values for dropdowns
     makes = Vehicle.objects.values_list("make", flat=True).distinct().order_by("make")
     models = Vehicle.objects.values_list("model", flat=True).distinct().order_by("model")
-    years = Vehicle.objects.values_list("year", flat=True).distinct().order_by("-year")  # Sorted from newest to oldest
+    years = Vehicle.objects.values_list("year", flat=True).distinct().order_by("-year")
     prices = Vehicle.objects.values_list("price", flat=True).distinct().order_by("price")
 
     # Get filter parameters from GET request
@@ -58,8 +58,13 @@ def filter(request):
     if price_max:
         vehicles = vehicles.filter(price__lte=price_max)
 
+    # Pagination: Show 20 vehicles per page
+    paginator = Paginator(vehicles, 20)
+    page_number = request.GET.get("page")
+    vehicles_page = paginator.get_page(page_number)
+
     return render(request, "filter.html", {
-        "vehicles": vehicles,
+        "vehicles": vehicles_page,
         "makes": makes,
         "models": models,
         "years": years,
