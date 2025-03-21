@@ -9,33 +9,66 @@
         <div class="row">
             <div class="col-md-4">
                 <label for="make">Make</label>
-                <input type="text" name="make" id="make" class="form-control" value="{{ request.GET.make }}">
+                <select name="make" id="make" class="form-control">
+                    <option value="">Any</option>
+                    {% for make in makes %}
+                        <option value="{{ make }}" {% if request.GET.make == make %}selected{% endif %}>{{ make }}</option>
+                    {% endfor %}
+                </select>
             </div>
             <div class="col-md-4">
                 <label for="model">Model</label>
-                <input type="text" name="model" id="model" class="form-control" value="{{ request.GET.model }}">
+                <select name="model" id="model" class="form-control">
+                    <option value="">Any</option>
+                    {% for model in models %}
+                        <option value="{{ model }}" {% if request.GET.model == model %}selected{% endif %}>{{ model }}</option>
+                    {% endfor %}
+                </select>
             </div>
             <div class="col-md-2">
                 <label for="year_min">Min Year</label>
-                <input type="number" name="year_min" id="year_min" class="form-control" value="{{ request.GET.year_min }}">
+                <select name="year_min" id="year_min" class="form-control">
+                    <option value="">Any</option>
+                    {% for year in years %}
+                        <option value="{{ year }}" {% if request.GET.year_min == year|stringformat:"s" %}selected{% endif %}>{{ year }}</option>
+                    {% endfor %}
+                </select>
             </div>
             <div class="col-md-2">
                 <label for="year_max">Max Year</label>
-                <input type="number" name="year_max" id="year_max" class="form-control" value="{{ request.GET.year_max }}">
+                <select name="year_max" id="year_max" class="form-control">
+                    <option value="">Any</option>
+                    {% for year in years %}
+                        <option value="{{ year }}" {% if request.GET.year_max == year|stringformat:"s" %}selected{% endif %}>{{ year }}</option>
+                    {% endfor %}
+                </select>
             </div>
             <div class="col-md-3">
                 <label for="price_min">Min Price</label>
-                <input type="number" name="price_min" id="price_min" class="form-control" value="{{ request.GET.price_min }}">
+                <select name="price_min" id="price_min" class="form-control">
+                    <option value="">Any</option>
+                    {% for price in prices %}
+                        <option value="{{ price }}" {% if request.GET.price_min == price|stringformat:"s" %}selected{% endif %}>${{ price }}</option>
+                    {% endfor %}
+                </select>
             </div>
             <div class="col-md-3">
                 <label for="price_max">Max Price</label>
-                <input type="number" name="price_max" id="price_max" class="form-control" value="{{ request.GET.price_max }}">
+                <select name="price_max" id="price_max" class="form-control">
+                    <option value="">Any</option>
+                    {% for price in prices %}
+                        <option value="{{ price }}" {% if request.GET.price_max == price|stringformat:"s" %}selected{% endif %}>${{ price }}</option>
+                    {% endfor %}
+                </select>
             </div>
             <div class="col-md-3 d-flex align-items-end">
                 <button type="submit" class="btn btn-primary w-100">Apply Filters</button>
             </div>
         </div>
     </form>
+
+    <!-- Back to Home Button -->
+    <a href="{% url 'search' %}" class="btn btn-secondary mb-4">Back to Home</a>
 
     <!-- Display Filtered Vehicles -->
     {% if vehicles %}
@@ -46,7 +79,7 @@
                         {% if vehicle.image %}
                             <img src="{{ vehicle.image.url }}" class="card-img-top" alt="{{ vehicle.make }} {{ vehicle.model }}">
                         {% else %}
-                            <img src="/media/assets/sample3.png" class="card-img-top" alt="No Image Available">
+                            <img src="/media/assets/default.png" class="card-img-top" alt="No Image Available">
                         {% endif %}
                         <div class="card-body">
                             <h5 class="card-title">{{ vehicle.make }} {{ vehicle.model }} ({{ vehicle.year }})</h5>
@@ -58,6 +91,23 @@
                 </div>
             {% endfor %}
         </div>
+        
+        <!-- Pagination -->
+        <nav>
+            <ul class="pagination">
+                {% if vehicles.has_previous %}
+                    <li class="page-item"><a class="page-link" href="?page=1">First</a></li>
+                    <li class="page-item"><a class="page-link" href="?page={{ vehicles.previous_page_number }}">Previous</a></li>
+                {% endif %}
+
+                <li class="page-item disabled"><a class="page-link">Page {{ vehicles.number }} of {{ vehicles.paginator.num_pages }}</a></li>
+
+                {% if vehicles.has_next %}
+                    <li class="page-item"><a class="page-link" href="?page={{ vehicles.next_page_number }}">Next</a></li>
+                    <li class="page-item"><a class="page-link" href="?page={{ vehicles.paginator.num_pages }}">Last</a></li>
+                {% endif %}
+            </ul>
+        </nav>
     {% else %}
         <p class="text-muted">No vehicles match your criteria.</p>
     {% endif %}
