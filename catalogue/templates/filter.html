@@ -93,21 +93,34 @@
         </div>
         
         <!-- Pagination -->
+        {% with request.GET.items as get_params %}
         <nav>
             <ul class="pagination">
                 {% if vehicles.has_previous %}
-                    <li class="page-item"><a class="page-link" href="?page=1">First</a></li>
-                    <li class="page-item"><a class="page-link" href="?page={{ vehicles.previous_page_number }}">Previous</a></li>
+                    <li class="page-item">
+                        <a class="page-link" href="?page=1{% for key, value in get_params %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}">First</a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ vehicles.previous_page_number }}{% for key, value in get_params %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}">Previous</a>
+                    </li>
                 {% endif %}
 
-                <li class="page-item disabled"><a class="page-link">Page {{ vehicles.number }} of {{ vehicles.paginator.num_pages }}</a></li>
+                <li class="page-item disabled">
+                    <a class="page-link">Page {{ vehicles.number }} of {{ vehicles.paginator.num_pages }}</a>
+                </li>
 
                 {% if vehicles.has_next %}
-                    <li class="page-item"><a class="page-link" href="?page={{ vehicles.next_page_number }}">Next</a></li>
-                    <li class="page-item"><a class="page-link" href="?page={{ vehicles.paginator.num_pages }}">Last</a></li>
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ vehicles.next_page_number }}{% for key, value in get_params %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}">Next</a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ vehicles.paginator.num_pages }}{% for key, value in get_params %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}">Last</a>
+                    </li>
                 {% endif %}
             </ul>
         </nav>
+        {% endwith %}
+
     {% else %}
         <p class="text-muted">No vehicles match your criteria.</p>
     {% endif %}
