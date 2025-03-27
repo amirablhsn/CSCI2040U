@@ -89,7 +89,7 @@ def details(request, id):
     if vehicle.image:
         imageUrl = vehicle.image.url
     else:
-        imageUrl = '/media/assets/sample3.png'
+        imageUrl = '/media/assets/sample2.png'
     return render(request, "details.html", {"vehicle": vehicle, "imageUrl": imageUrl})
 
 # function for editing an existing vehicle
