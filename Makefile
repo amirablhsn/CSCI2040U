@@ -40,6 +40,25 @@ run:
 	@python -c "print('$(GREEN)Running server..$(RESET)')"
 	$(PYTHON) manage.py runserver
 
+
+# Run all tests
+.PHONY: test
+test:
+	@python -c "print('$(GREEN)Running all tests.. $(RESET)')"
+	$(PYTHON) manage.py test
+
+# Run catalogue tests
+.PHONY: test_catalogue
+test_catalogue:
+	@python -c "print('$(GREEN)Running catalogue tests.. $(RESET)')"
+	$(PYTHON) manage.py test catalogue.tests
+
+# Run user tests
+.PHONY: test_users
+test_users:
+	@python -c "print('$(GREEN)Running user tests.. $(RESET)')"
+	$(PYTHON) manage.py test users.tests
+
 .PHONY: clean
 clean:
 	$(RM) db.sqlite3
