@@ -1,5 +1,8 @@
-{% extends "base.html" %} {% block title %} Home Page {% endblock %}
+{% extends "base.html" %} 
+{% block title %} Search Results {% endblock %}
 {% block content %}
+{% load humanize %}
+
 
 <style>
     body {
@@ -34,46 +37,75 @@
 </nav>
 
 <div class="container" style="margin-top: 50px">
-   
-    <h1>Welcome!</h1>
+    <h1 id="main-header">Look through our car catalogue!</h1>
     <form method="GET" action="{% url 'search' %}">
-        <div class="mb-3">
-        <label for="catalogue-search" class="form-label">Search</label>
-        <input type="search" name="catalogue-search" class="form-control" id="catalogue-search" aria-describedby="search-vehicles" value="{{ query }}">
-        <div id="search-vehicles" class="form-text" style="color: white;">Look through our catalogue!</div>
+        <div class="mb-3 search-container"> 
+            <input type="search" placeholder="Search" name="catalogue-search" class="form-control" id="catalogue-search" aria-describedby="search-vehicles" value="{{ query }}">
+            <i class="fas fa-search search-icon"></i>
         </div>
-        <button type="search" class="btn btn-primary">Search</button>
-        <a href="{% url 'add' %}" class="btn btn-primary">Add Vehicle</a>
-        <a href="{% url 'filter' %}" class="btn btn-primary">Filter</a>
-    </form>
+            <div id="main-btn-container">
+                <button type="submit" class="btn btn-primary main-page-btn">Search</button>
+                <a href="{% url 'add' %}" class="btn btn-primary main-page-btn">Add Vehicle</a>
+                <a href="{% url 'filter' %}" class="btn btn-primary main-page-btn">Filter</a>
+            </div>
+        </form>
 
-  
-  {% if vehicles %}
-    <h2>Search Result</h2>
-    <table class="table">
-        <thead>
-        <tr>
-            <th scope="col">#</th>
-            <th scope="col">Make</th>
-            <th scope="col">Model</th>
-            <th scope="col">Trim</th>
-            <th scope="col">Year</th>
-        </tr>
-        </thead>
+    {% if vehicles %}
+    <div class="row">
         {% for vehicle in vehicles %}
-                <tr onclick="window.location='{% url 'details' vehicle.id %}';" style="cursor: pointer">
-                    <th scope="row">{{ forloop.counter }}</th>
-                    <td>{{ vehicle.make }}</td>
-                    <td>{{ vehicle.model }}</td>
-                    <td>{{ vehicle.trim }}</td>
-                    <td>{{ vehicle.year }}</td>
-                </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+            <div class="col-md-3 d-flex mb-4">
+                <div class="vehicle-card w-100">
+                    <div class="image-container">
+                        {% if vehicle.image %}
+                            <img class="card-img-top main-veh-image" src="{{ vehicle.image.url }}" alt="{{ vehicle.make }} {{ vehicle.model }}">
+                        {% else %}
+                            <img class="card-img-top main-veh-image" src="/media/assets/default.png" alt="No Image Available">
+                        {% endif %}
+                    </div> 
+                    <div class="card-body">
+                        <div>
+                            <div class="vehicle-title">{{ vehicle.make }} {{ vehicle.model }} ({{ vehicle.year }})</div>
+                            <p class="card-text">Trim: {{ vehicle.trim }}<br>${{ vehicle.price|intcomma }}</p>
+                        </div>
+                        <a href="{% url 'details' vehicle.id %}" class="btn btn-outline-primary vehicle-info-btn mt-3">View Details</a>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+    
+        
+        <!-- Pagination -->
+        {% with request.GET.items as get_params %}
+        <nav>
+            <ul class="pagination">
+                {% if vehicles.has_previous %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page=1{% for key, value in get_params %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}">First</a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ vehicles.previous_page_number }}{% for key, value in get_params %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}">Previous</a>
+                    </li>
+                {% endif %}
+
+                <li class="page-item disabled">
+                    <a class="page-link">Page {{ vehicles.number }} of {{ vehicles.paginator.num_pages }}</a>
+                </li>
+
+                {% if vehicles.has_next %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ vehicles.next_page_number }}{% for key, value in get_params %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}">Next</a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ vehicles.paginator.num_pages }}{% for key, value in get_params %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}">Last</a>
+                    </li>
+                {% endif %}
+            </ul>
+        </nav>
+        {% endwith %}
     {% else %}
         {% if query != "" %}
-            <p>No results found  for "{{ query }}"</p>
+            <p>No results found for "{{ query }}"</p>
         {% endif %}
     {% endif %}
 </div>

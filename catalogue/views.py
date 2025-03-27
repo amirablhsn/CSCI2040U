@@ -7,22 +7,34 @@ from django.http import HttpResponseRedirect
 from django.urls import reverse
 from django.contrib import messages
 from django.shortcuts import redirect
+from django.core.paginator import Paginator
 
 # Create your views here.
 def search(request):
     query = request.GET.get("catalogue-search", "")
-    vehicles = []
+    vehicles = Vehicle.objects.all()
+
     if query:
-        vehicles = Vehicle.objects.annotate(
+        vehicles = vehicles.annotate(
             combined=Concat("make", Value(" "), "model", Value(" "), "trim")
-            ).filter(combined__icontains=query)
+        ).filter(combined__icontains=query)
 
+    # Pagination: Show 21 vehicles per page
+    paginator = Paginator(vehicles, 21)
+    page_number = request.GET.get("page")
+    vehicles_page = paginator.get_page(page_number)
 
-    return render(request, "search.html", {"vehicles" : vehicles, "query" : query})
+    return render(request, "search.html", {"vehicles": vehicles_page, "query": query})
 
 def filter(request):
     """Filters vehicles based on request parameters."""
     vehicles = Vehicle.objects.all()
+
+    # Get distinct values for dropdowns
+    makes = Vehicle.objects.values_list("make", flat=True).distinct().order_by("make")
+    models = Vehicle.objects.values_list("model", flat=True).distinct().order_by("model")
+    years = Vehicle.objects.values_list("year", flat=True).distinct().order_by("-year")
+    prices = Vehicle.objects.values_list("price", flat=True).distinct().order_by("price")
 
     # Get filter parameters from GET request
     make = request.GET.get("make", "")
@@ -34,9 +46,9 @@ def filter(request):
 
     # Apply filters
     if make:
-        vehicles = vehicles.filter(make__icontains=make)
+        vehicles = vehicles.filter(make=make)
     if model:
-        vehicles = vehicles.filter(model__icontains=model)
+        vehicles = vehicles.filter(model=model)
     if year_min:
         vehicles = vehicles.filter(year__gte=year_min)
     if year_max:
@@ -46,7 +58,19 @@ def filter(request):
     if price_max:
         vehicles = vehicles.filter(price__lte=price_max)
 
-    return render(request, "filter.html", {"vehicles": vehicles})
+    # Pagination: Show 20 vehicles per page
+    paginator = Paginator(vehicles, 20)
+    page_number = request.GET.get("page")
+    vehicles_page = paginator.get_page(page_number)
+
+    return render(request, "filter.html", {
+        "vehicles": vehicles_page,
+        "makes": makes,
+        "models": models,
+        "years": years,
+        "prices": prices
+    })
+
 
 
 # https://docs.djangoproject.com/en/5.1/topics/forms/
@@ -65,7 +89,7 @@ def details(request, id):
     if vehicle.image:
         imageUrl = vehicle.image.url
     else:
-        imageUrl = '/media/assets/sample3.png'
+        imageUrl = '/media/assets/sample2.png'
     return render(request, "details.html", {"vehicle": vehicle, "imageUrl": imageUrl})
 
 # function for editing an existing vehicle

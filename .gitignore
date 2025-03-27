@@ -1,0 +1,22 @@
+# Ignore Python cache directories and compiled files
+**/__pycache__/
+**/*.pyc
+**/*.pyo
+**/*.pyd
+*.pyc
+
+# Ignore environment-related files
+.env
+.venv/
+venv/
+
+# Ignore IDE/editor-specific files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Ignore log and temporary files
+*.log
+*.tmp
+.DS_Store

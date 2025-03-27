@@ -20,11 +20,13 @@ def format():
         writer.writerows(rows)
 
 
-def import_csv():
+def import_csv(limit = 100):
     print("Inserting into database..")
     with open(output_file, newline='', encoding='utf-8-sig') as file:
         reader = csv.DictReader(file)
-        for row in reader:
+        for i, row in enumerate(reader):
+            if (i > limit):
+                break
             # Handle missing fields
             cylinders = int(row['cylinders']) if row['cylinders'].isdigit() else 4
             price = round(float(row['price']) if row['price'].replace('.', '', 1).isdigit() else 0.00, 2)
