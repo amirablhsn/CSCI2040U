@@ -5,13 +5,6 @@
 
   <!-- Back to Home Button -->
   <a href="{% url 'search' %}" class="btn btn-secondary mb-4">Back to Home</a>
-
-    <style>
-        body {
-            background-color: #333; /* Dark grey background */
-            color: white; /* Optional: makes text more readable */
-        }
-    </style>
     <div class="card p-4">
         <h4 class="fw-bold">{{vehicle.year}} {{vehicle.make}} {{vehicle.model}} {{vehicle.trim}}</h4>
         <p class="fw-bold">Type: {{vehicle.body}}</a></p>
