@@ -1,6 +1,8 @@
 {% extends "base.html" %}
 
 {% block content %}
+{% load humanize %}
+
 <style>
     .ratio-container {
         position: relative;
@@ -88,28 +90,30 @@
     <a href="{% url 'search' %}" class="btn btn-secondary mb-4">Back to Home</a>
 
     <!-- Display Filtered Vehicles -->
+  
     {% if vehicles %}
-        <div class="row">
-            {% for vehicle in vehicles %}
-                <div class="col-md-4 mb-4">
-                    <div class="card">
-                        <div class="ratio-container">
-                            {% if vehicle.image %}
-                                <img src="{{ vehicle.image.url }}" alt="{{ vehicle.make }} {{ vehicle.model }}">
-                            {% else %}
-                                <img src="/media/assets/default.png" alt="No Image Available">
-                            {% endif %}
+    <div class="row">
+        {% for vehicle in vehicles %}
+            <div class="col-md-3 d-flex mb-4">
+                <div class="vehicle-card w-100">
+                    <div class="image-container">
+                        {% if vehicle.image %}
+                            <img class="card-img-top main-veh-image" src="{{ vehicle.image.url }}" alt="{{ vehicle.make }} {{ vehicle.model }}">
+                        {% else %}
+                            <img class="card-img-top main-veh-image" src="/media/assets/default.png" alt="No Image Available">
+                        {% endif %}
+                    </div> 
+                    <div class="card-body">
+                        <div>
+                            <div class="vehicle-title">{{ vehicle.make }} {{ vehicle.model }} ({{ vehicle.year }})</div>
+                            <p class="card-text">Trim: {{ vehicle.trim }}<br>${{ vehicle.price|intcomma }}</p>
                         </div>
-                        <div class="card-body">
-                            <h5 class="card-title">{{ vehicle.make }} {{ vehicle.model }} ({{ vehicle.year }})</h5>
-                            <p class="card-text">Trim: {{ vehicle.trim }}</p>
-                            <p class="card-text">Price: ${{ vehicle.price }}</p>
-                            <a href="{% url 'details' vehicle.id %}" class="btn btn-secondary">View Details</a>
-                        </div>
+                        <a href="{% url 'details' vehicle.id %}" class="btn btn-outline-primary vehicle-info-btn mt-3">View Details</a>
                     </div>
                 </div>
-            {% endfor %}
-        </div>
+            </div>
+        {% endfor %}
+    </div>
         
         <!-- Pagination -->
         {% with request.GET.items as get_params %}

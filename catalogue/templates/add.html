@@ -2,13 +2,25 @@
 {% block title %} Add Vehicle {% endblock %}
 
 {% block content %}
-<h1>Add a New Vehicle</h1>
 
-<form action="/add/" method="post" enctype="multipart/form-data">
-    {% csrf_token %}
-    {{ form }}
-    <input type="submit" value="Submit">
-</form>
+<div class="form-container"> 
+    <h2 class="mb-4 form-title">Add a New Vehicle</h2>
+    <form action="/add/" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {% for field in form %}
+            <div class="mb-3">
+                <label for="{{ field.id_for_label }}" class="form-label">
+                    {{ field.label }}
+                    {% if field.field.required %}
+                        <span class="required-star">*</span>
+                    {% endif %}
+                </label>
+                {{ field }}
+        {% endfor %}
+        <button type="submit" class="btn btn-primary form-button">Submit</button>
+    </form>
+</div>
+
 
 
 {% endblock %}

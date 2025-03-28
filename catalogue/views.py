@@ -19,8 +19,8 @@ def search(request):
             combined=Concat("make", Value(" "), "model", Value(" "), "trim")
         ).filter(combined__icontains=query)
 
-    # Pagination: Show 21 vehicles per page
-    paginator = Paginator(vehicles, 21)
+    # Pagination: Show 16 vehicles per page
+    paginator = Paginator(vehicles, 16)
     page_number = request.GET.get("page")
     vehicles_page = paginator.get_page(page_number)
 
@@ -58,8 +58,8 @@ def filter(request):
     if price_max:
         vehicles = vehicles.filter(price__lte=price_max)
 
-    # Pagination: Show 20 vehicles per page
-    paginator = Paginator(vehicles, 20)
+    # Pagination: Show 16 vehicles per page
+    paginator = Paginator(vehicles, 16)
     page_number = request.GET.get("page")
     vehicles_page = paginator.get_page(page_number)
 
