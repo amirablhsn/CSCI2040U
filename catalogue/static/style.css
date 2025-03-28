@@ -6,6 +6,13 @@ body {
     /* color: white;  */
 }
 
+#notify-message {
+    position: absolute;
+    top: 10%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
 #catalogue-search {
     background-color: white;
     color: black;

@@ -10,10 +10,46 @@
     <link rel="stylesheet" href="{% static 'style.css' %}">
 </head>
 <body data-bs-theme="dark">
+<!-- Navigation Bar -->
+<nav class ="navbar navbar-expand-lg navbar-dark bg-grey">
+    <div class="container">
+        <a class="navbar-brand" href="#">
+            <img src ={% static "masca_whips_logo.png" %} alt="Logo" height="100">
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+            aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+            <ul class="navbar-nav">
+            {% if user.is_authenticated %}
+                <li class="nav-item">
+                    <span class="nav-link text-light"><i class="fa-solid fa-user"></i> {{ user.username }}</span>
+                </li>
+                <li class="nav-item">
+                    <form method="post" action="{% url 'logout' %}">
+                        {% csrf_token %}
+                        <button type="submit" class="nav-link btn text-primary">Logout</button>
+                      </form>
+                </li>
+            {% else %}
+                <li class="nav-item">
+                    <a class="nav-link btn text-primary" href="{% url "login" %}">Login</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link btn btn-light text-primary" style="background-color: darkgrey;" href="{% url 'register' %}">Sign Up</a>
+                </li>
+            {% endif %}
+            </ul>
+        </div>
+    </div>
+</nav>
+
+
     <div class="container">{% block content %} {% endblock %}</div>
 
     {% if messages %}
-    <div id="delete-message" class="messages mt-4">
+    <div id="notify-message" class="messages mt-4">
         {% for message in messages %}
         <div class="alert alert-{{ message.tags }}">
             {{ message }}
@@ -22,7 +58,7 @@
     </div>
     <script>
         setTimeout(() => {
-            document.getElementById("delete-message").style.display = "none";
+            document.getElementById("notify-message").style.display = "none";
         }, 5000); 
     </script>
     {% endif %}
