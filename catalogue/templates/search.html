@@ -69,8 +69,19 @@
                     </div> 
                     <div class="card-body">
                         <div>
-                            <div class="vehicle-title">{{ vehicle.make }} {{ vehicle.model }} ({{ vehicle.year }})</div>
+                            <div class="vehicle-title">{{ vehicle.make }} {{ vehicle.model }} ({{ vehicle.year }})
+                                <style>
+                                    .vehicle-title {
+                                        color: white;
+                                    }
+                                </style>
+                            </div>
                             <p class="card-text">Trim: {{ vehicle.trim }}<br>${{ vehicle.price|intcomma }}</p>
+                            <style>
+                                .card-text {
+                                    color: white;
+                                }
+                            </style>
                         </div>
                         <a href="{% url 'details' vehicle.id %}" class="btn btn-outline-primary vehicle-info-btn mt-3">View Details</a>
                         <style>
