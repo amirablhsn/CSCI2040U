@@ -7,8 +7,7 @@
 <style>
     body {
         background: rgb(0,0,0);
-        background: linear-gradient(180deg, rgba(0,0,0,1) 0%, rgba(52,52,52,1) 50%, rgba(104,104,104,1) 100%);
-        
+        background: linear-gradient(180deg, rgba(0,0,0,1) 0%, rgba(3,0,65,1) 90%, rgba(1,0,255,1) 100%);
     }
 </style>
 
@@ -59,8 +58,14 @@
                         {% if vehicle.image %}
                             <img class="card-img-top main-veh-image" src="{{ vehicle.image.url }}" alt="{{ vehicle.make }} {{ vehicle.model }}">
                         {% else %}
-                            <img class="card-img-top main-veh-image" src="/media/assets/default.png" alt="No Image Available">
+                            <img class="card-img-top main-veh-image" src="/media/assets/x6m.png" alt="No Image Available">
                         {% endif %}
+                        <style>
+                            .image-container {
+                                background-color: #333;
+                                color: white;
+                            }
+                        </style>
                     </div> 
                     <div class="card-body">
                         <div>
@@ -68,13 +73,21 @@
                             <p class="card-text">Trim: {{ vehicle.trim }}<br>${{ vehicle.price|intcomma }}</p>
                         </div>
                         <a href="{% url 'details' vehicle.id %}" class="btn btn-outline-primary vehicle-info-btn mt-3">View Details</a>
+                        <style>
+                            .card-body{
+                                background-color: #333; /* Dark Grey */
+                                color: white; /* White Text */
+                            }
+                            
+                        </style>
                     </div>
+                   
                 </div>
             </div>
         {% endfor %}
     </div>
     
-        
+    
         <!-- Pagination -->
         {% with request.GET.items as get_params %}
         <nav>

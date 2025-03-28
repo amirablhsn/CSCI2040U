@@ -2,6 +2,13 @@
 {% block title %} Add Vehicle {% endblock %}
 
 {% block content %}
+
+<style>
+    body {
+        background: rgb(0,0,0);
+        background: linear-gradient(180deg, rgba(0,0,0,1) 0%, rgba(3,0,65,1) 75%, rgba(1,0,255,1) 100%);   
+    }
+</style> 
 <h1>Add a New Vehicle</h1>
 
 <form action="/add/" method="post" enctype="multipart/form-data">
