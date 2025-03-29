@@ -7,6 +7,19 @@ class LoginForm(forms.Form):
     username = forms.CharField(max_length=65)
     password = forms.CharField(max_length=65, widget=forms.PasswordInput)
 
+    def __init__(self, *args, **kwargs):
+        super(LoginForm, self).__init__(*args, **kwargs)
+        for field in self.fields.values():
+            field.widget.attrs.update({'class': 'form-control'})
+
+        self.fields["username"].widget.attrs.update({
+        "class": "form-control",
+        "placeholder": "Username"
+        })
+        self.fields["password"].widget.attrs.update({
+            "class": "form-control",
+            "placeholder": "Password"
+        })
     
 class RegisterForm(UserCreationForm):
     class Meta:
