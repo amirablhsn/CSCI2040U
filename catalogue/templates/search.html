@@ -44,7 +44,9 @@
         </div>
             <div id="main-btn-container">
                 <button type="submit" class="btn btn-primary main-page-btn">Search</button>
+                {% if user.is_staff %}
                 <a href="{% url 'add' %}" class="btn btn-primary main-page-btn">Add Vehicle</a>
+                {% endif %}
                 <a href="{% url 'filter' %}" class="btn btn-primary main-page-btn">Filter</a>
             </div>
         </form>

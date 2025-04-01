@@ -8,6 +8,8 @@ from django.urls import reverse
 from django.contrib import messages
 from django.shortcuts import redirect
 from django.core.paginator import Paginator
+from django.contrib.admin.views.decorators import staff_member_required
+
 
 # Create your views here.
 def search(request):
@@ -74,6 +76,7 @@ def filter(request):
 
 
 # https://docs.djangoproject.com/en/5.1/topics/forms/
+@staff_member_required
 def add(request):
     if request.method == "POST":
         form = VehicleForm(request.POST, request.FILES)
@@ -93,6 +96,7 @@ def details(request, id):
     return render(request, "details.html", {"vehicle": vehicle, "imageUrl": imageUrl})
 
 # function for editing an existing vehicle
+@staff_member_required
 def edit(request, id):
     vehicle = get_object_or_404(Vehicle, id=id)
     
@@ -107,6 +111,7 @@ def edit(request, id):
     return render(request, "edit.html", {"form": form, "vehicle": vehicle})
 
 # function to delete an existing vehicle
+@staff_member_required
 def delete(request, id):
     vehicle= get_object_or_404(Vehicle, id=id)
     if request.method == "POST":

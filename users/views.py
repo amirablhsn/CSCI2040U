@@ -2,6 +2,8 @@ from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.contrib.auth import login, authenticate, logout
 from .forms import LoginForm, RegisterForm
+from django.contrib.auth.decorators import login_required
+
 
 # Create your views here.
 def register(request):
@@ -39,3 +41,23 @@ def logout_view(request):
     logout(request)
     messages.success(request, "You have been logged out.")
     return redirect("/")
+    
+@login_required
+def profile_view(request):
+    return render(request, "profile.html")
+
+@login_required
+def request_admin(request):
+    if request.method == "POST":
+        request.user.is_staff = True
+        request.user.save()
+        messages.success(request, "You are now an admin")
+    return redirect("profile")
+
+@login_required
+def remove_admin(request):
+    if request.method == "POST":
+        request.user.is_staff = False
+        request.user.save()
+        messages.success(request, "Your admin role has been removed")
+    return redirect("profile")

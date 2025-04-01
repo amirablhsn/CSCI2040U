@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<h2 class="profile-header">Welcome, {{user.username}}</h2>
+
+{% if not user.is_staff %}
+<form method="POST", action = {% url "request_admin" %}>
+    {% csrf_token %}
+    <button type="submit" class="btn btn-primary">Request Admin</button>
+</form>
+{% endif %}
+
+
+{% if user.is_staff %}
+<form method="POST", action = {% url "remove_admin" %}>
+    {% csrf_token %}
+    <button type="submit" class="btn btn-danger">Remove Admin</button>
+</form>
+{% endif %}
+
+{% endblock content%}

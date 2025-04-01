@@ -36,7 +36,9 @@ class RegisterForm(UserCreationForm):
             }
     
     def clean_email(self):
-        email = self.cleaned_data.get("email")        
+        email = self.cleaned_data.get("email")
+        if not email:
+            raise ValidationError("Missing Field")
         if not re.match(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$', email):
             raise ValidationError("Enter a valid email address.")
         
