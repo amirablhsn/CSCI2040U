@@ -12,6 +12,3 @@ urlpatterns = [
     path('edit/<int:id>/', views.edit, name='edit'),
     path("delete/<int:id>/", views.delete, name="delete"),
 ]
-
-if settings.DEBUG:
-    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
