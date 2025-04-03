@@ -1,4 +1,8 @@
 # Testing Plan
+## Tesing Plan Overview
+Below outlines the unit, integration, and system tests to be implemented for our application. The unit tests will use clear box testing, the integration test will use translucent box testing, and the system tests will use opaque box tests.
+
+Unit and integration tests will be implemented using Django's `TestCase`, while system tests will be performed manually in the browser.
 
 ## Unit Tests
 ### 1. Vehicle Model Tests
