@@ -20,3 +20,5 @@ venv/
 *.log
 *.tmp
 .DS_Store
+
+media/assets
