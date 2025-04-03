@@ -1,10 +1,10 @@
 import matplotlib.pyplot as plt
 
 # Define time points (days) for iterations
-days = list(range(1, 29))  # 28-day iteration
+days = list(range(1, 15))  # 28-day iteration
 
 # Ideal burndown line (evenly distributing 12 tasks over 28 days)
-ideal_tasks_remaining = [12 - (i * 12 / 28) for i in range(28)]
+ideal_tasks_remaining = [12 - (i * 12 / 14) for i in range(14)]
 
 # Actual burndown data based on the user's progress
 actual_tasks_remaining = [12] * 7 + [9] * 7 + [8] + [8] * 13  # Updated with given progress
