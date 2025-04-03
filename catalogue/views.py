@@ -104,7 +104,7 @@ def details(request, id):
 
 
 # Add, edit, delete functions require user to have staff privileges
-@staff_member_required
+@staff_member_required(login_url="/") #Redirect to home, if not admin
 def add(request):
     """Adds a new vehicle to the database using details from the form"""
     if request.method == "POST":
@@ -122,7 +122,7 @@ def add(request):
     return render(request, "add.html", {"form": form})
 
 # function for editing an existing vehicle
-@staff_member_required
+@staff_member_required(login_url="/") #Redirect to home, if not admin
 def edit(request, id):
     """Edits an existing vehicle in the database"""
 
@@ -144,7 +144,7 @@ def edit(request, id):
     return render(request, "edit.html", {"form": form, "vehicle": vehicle})
 
 # function to delete an existing vehicle
-@staff_member_required
+@staff_member_required(login_url="/") #Redirect to home, if not admin
 def delete(request, id):
     """Deletes a vehicle from the database"""
     vehicle= get_object_or_404(Vehicle, id=id)
@@ -156,7 +156,7 @@ def delete(request, id):
     # If a POST request was not sent, re-render the vehicle's detail page
     return render(request, "details.html", {"vehicle": vehicle})
 
-@login_required
+@login_required(login_url="/users/login") #Redirect to login in not logged in
 def toggle_favourite(request, id):
     """Adds or remove vehicle from user's favourites list"""
     vehicle = get_object_or_404(Vehicle, id=id)

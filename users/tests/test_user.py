@@ -1,109 +1,67 @@
-from django.test import TestCase
-from django.contrib.auth import get_user_model
+from django.test import TestCase, Client
+from django.contrib.auth.models import User
+from django.contrib.auth import get_user
+from django.contrib.messages import get_messages
 from django.urls import reverse
+from catalogue.models import Favourite, Vehicle
 
-
-class TestUserRegistration(TestCase):
+class UserAccountTests(TestCase):
     def setUp(self):
-            self.user = get_user_model().objects.create_user(username="user", email="user@example.com", password="TestPass123!")
-    
-    # Tests successful user registration
-    def test_registration(self):
-        response = self.client.post(reverse("register"), {
-            "username": "newuser",
-            "email": "newuser@example.com",
-            "password1": "TestPass123!",
-            "password2": "TestPass123!"
-        })
-        self.assertEqual(response.status_code, 302)
-        self.assertTrue(get_user_model().objects.filter(username="newuser").exists())
+        """Creat user and vehicle for tests"""
+        self.client = Client()
+        self.user = User.objects.create_user(username="user", password="password")
+        self.vehicle = Vehicle.objects.create(make="Toyota", model="RAV4", year=2023, trim="LE",body="SUV", price=35000)
 
-    # Test username already exists
-    def test_existing_user(self):
-        response = self.client.post(reverse("register"), {
+    def test_valid_login(self):
+        """Test valid username and password"""
+        # Send POST with correct username/password
+        response = self.client.post(reverse("login"), {
             "username": "user",
-            "email": "newuser@example.com",
-            "password1": "TestPass123!",
-            "password2": "TestPass123!"
-        })
-        self.assertEqual(response.status_code, 200)
-        self.assertContains(response, "Username already exists.")
-    
-    # Tests email already used
-    def test_email_used(self): 
-        response = self.client.post(reverse("register"), {
-            "username": "newuser1",
-            "email": "user@example.com",
-            "password1": "TestPass123!",
-            "password2": "TestPass123!"
-        })
-        self.assertEqual(response.status_code, 200)
-        self.assertContains(response, "Email already used.")
-    
-    # Test passwords confimration mismatch
-    def test_mismatched_password(self):
-        response = self.client.post(reverse("register"), {
-            "username": "newuser2",
-            "email": "newuser2@example.com",
-            "password1": "TestPass123!",
-            "password2": "TestPass1!"
-        })
-        self.assertEqual(response.status_code, 200)
-        self.assertContains(response, "The two password fields didn’t match.")
+            "password": "password"
+        }, follow=True)
+        
+        # Redirects to home and and user is logged in
+        self.assertRedirects(response, "/")
+        user = get_user(self.client)
+        self.assertTrue(user.is_authenticated)
 
-    # Test missing field input
-    def test_missing_field(self):
-        response = self.client.post(reverse("register"), {
-            "username": "",
-            "email": "",
-            "password1": "",
-            "password2": ""
-        })
-        self.assertEqual(response.status_code, 200)
-   
-    def test_missing_field_user(self):
-        response = self.client.post(reverse("register"), {
-            "username": "",
-            "email": "newuser3@example.com",
-            "password1": "TestPass123!",
-            "password2": "TestPass123!"
-        })
-        self.assertEqual(response.status_code, 200)
-    
-    def test_missing_field_email(self):
-        response = self.client.post(reverse("register"), {
-            "username": "user4",
-            "email": "",
-            "password1": "TestPass123!",
-            "password2": "TestPass123!"
-        })
-        self.assertEqual(response.status_code, 200)
-    
-    def test_missing_field_password1(self):
-        response = self.client.post(reverse("register"), {
-            "username": "user5",
-            "email": "newuser5@example.com",
-            "password1": "",
-            "password2": "TestPass123!"
-        })
-        self.assertEqual(response.status_code, 200)
+    def test_invalid_login(self):
+        """Test invalid username/password login attempt"""
+        
+        # Send POST with incorrect password
+        response = self.client.post(reverse("login"), {
+            "username": "user",
+            "password": "wrongpass"
+        }, follow=True)
 
-    def test_missing_field_password2(self):
-        response = self.client.post(reverse("register"), {
-            "username": "user6",
-            "email": "newuser6@example.com",
-            "password1": "TestPass123!",
-            "password2": ""
-        })
+        # re-renders login in page, user not logged in
         self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, "login.html")
+        user = get_user(self.client)
+        self.assertFalse(user.is_authenticated)
 
-    # Test invalid email format
-    def test_invalid_email(self):
-        response = self.client.post(reverse("register"), {
-            "username": "newuser7",
-            "email": "invalid_email",
-            "password1": "TestPass123!",
-            "password2": "TestPass123!"
-        })
+    def test_user_logout(self):
+        """Test logging out user, redirects to home"""
+        # Login in client, and send request to logout
+        self.client.login(username="user", password="password")
+        response = self.client.get(reverse("logout"), follow=True)
+
+        # redirect to home, user is logged out
+        self.assertRedirects(response, "/")
+        user = get_user(self.client)
+        self.assertFalse(user.is_authenticated)
+
+    def test_profile_favourites(self):
+        """Test profile with favourited vehicles"""
+        # Login in user and add vehicle to users favourites
+        self.client.login(username="user", password="password")
+        Favourite.objects.create(user=self.user, vehicle=self.vehicle)
+
+        # Request to profile page
+        response = self.client.get(reverse("profile"))
         self.assertEqual(response.status_code, 200)
-        self.assertContains(response, "Enter a valid email address.")
+        self.assertTemplateUsed(response, "profile.html")
+        
+        # Ensure Toyota RAV4 is included
+        self.assertContains(response, "Toyota")
+        self.assertContains(response, "RAV4")

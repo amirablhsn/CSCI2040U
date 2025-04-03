@@ -1,7 +1,8 @@
 from django.test import TestCase
 from django.urls import reverse
+from django.contrib.auth.models import User
 from ..models import Vehicle
-
+from ..models import Favourite
 #Tests for search, filter, and detail views
 class VehicleViewTests(TestCase):
     def setUp(self):
@@ -10,6 +11,8 @@ class VehicleViewTests(TestCase):
         self.vehicle2 = Vehicle.objects.create(make="Honda", model="Accord", year=2022, trim="LX", body="Sedan", price=30000)
         self.vehicle3 = Vehicle.objects.create(make="Toyota", model="RAV4", year=2023, trim="LE",body="SUV", price=35000)
 
+        # Create a user for testing favourites
+        self.user = User.objects.create_user(username="user", password="password")
     
     def test_search_result(self):
         """Integration Test for searching with results found"""
@@ -109,9 +112,37 @@ class VehicleViewTests(TestCase):
         # Ensure default image is used
         self.assertContains(response, "/media/assets/sample2.png")
 
-    def test_details_view_invalid_vehicle_raises_404(self):
+    def test_details_invalid_vehicle(self):
         """Integration test for getting details of invalid vehicle id"""
         invalid_id = 9999
         # Sending request with invalid id, results in 404 error
         response = self.client.get(reverse("details", args=[invalid_id]))
         self.assertEqual(response.status_code, 404)
+
+
+    def test_favourite_requires_login(self):
+        """Integration test for guest redirected when accessing favourites"""
+        # Send request to favourite vehicle
+        url = reverse("toggle_favourite", args=[self.vehicle1.id])
+        response = self.client.get(url)
+        
+        # Redirects to login page
+        self.assertEqual(response.status_code, 302)
+        self.assertTrue(response.url.startswith("/users/login"))
+
+    def test_toggle_favourite(self):
+        """Integration test for toggling favourite vehicle"""
+        self.client.login(username="user", password="password")
+
+        url = reverse("toggle_favourite", args=[self.vehicle1.id])
+        referer = reverse("details", args=[self.vehicle1.id])
+
+        # First toggle - add to favourites
+        response = self.client.get(url, follow=True,  HTTP_REFERER=referer)
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(Favourite.objects.filter(user=self.user, vehicle=self.vehicle1).exists())
+
+        # Second toggle - remove from favourites
+        response = self.client.get(url, follow=True,HTTP_REFERER=referer)
+        self.assertEqual(response.status_code, 200)
+        self.assertFalse(Favourite.objects.filter(user=self.user, vehicle=self.vehicle1).exists())
