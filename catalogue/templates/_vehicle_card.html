@@ -1,0 +1,28 @@
+{% load humanize %}
+<div class="col-md-3 d-flex mb-4">
+    <div class="vehicle-card w-100">
+        <div class="image-container">
+            {% if vehicle.image %}
+                <img class="card-img-top main-veh-image" src="{{ vehicle.image.url }}" alt="{{ vehicle.make }} {{ vehicle.model }}">
+            {% else %}
+                <img class="card-img-top main-veh-image" src="/media/assets/x6m.png" alt="No Image Available">
+            {% endif %}
+        </div> 
+        <div class="card-body">
+            <div>
+                <div class="vehicle-title">{{ vehicle.make }} {{ vehicle.model }} ({{ vehicle.year }})
+                    {% if user.is_authenticated %}
+                        {% if vehicle.id in ids %}
+                            <a href="{% url 'toggle_favourite' vehicle.id %}"><i class="fa-solid fa-star fav-icon"></i></a>
+                        {% else %}
+                            <a href="{% url 'toggle_favourite' vehicle.id %}"><i class="fa-regular fa-star fav-icon"></i></a>
+                        {% endif %}
+                    {% endif %}
+                    
+                </div>
+                <p class="card-text">Trim: {{ vehicle.trim }}<br>${{ vehicle.price|intcomma }}</p>
+            </div>
+            <a href="{% url 'details' vehicle.id %}" class="btn btn-outline-primary vehicle-info-btn mt-3">View Details</a>
+        </div>
+    </div>
+</div>

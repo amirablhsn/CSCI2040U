@@ -72,6 +72,13 @@
                     <div class="card-body">
                         <div>
                             <div class="vehicle-title">{{ vehicle.make }} {{ vehicle.model }} ({{ vehicle.year }})
+                                {% if user.is_authenticated %}
+                                    {% if vehicle.id in favourites %}
+                                        <a href="{% url 'toggle_favourite' vehicle.id %}"><i class="fa-solid fa-star fav-icon"></i></a>
+                                    {% else %}
+                                        <a href="{% url 'toggle_favourite' vehicle.id %}"><i class="fa-regular fa-star fav-icon"></i></a>
+                                    {% endif %}
+                                {% endif %}
                                 <style>
                                     .vehicle-title {
                                         color: white;

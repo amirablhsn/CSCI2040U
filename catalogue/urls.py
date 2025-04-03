@@ -11,4 +11,8 @@ urlpatterns = [
     path("vehicle/<int:id>/", views.details, name="details"),
     path('edit/<int:id>/', views.edit, name='edit'),
     path("delete/<int:id>/", views.delete, name="delete"),
+    path("favourite/<int:id>/", views.toggle_favourite, name="toggle_favourite"),
 ]
+
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

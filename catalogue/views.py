@@ -1,5 +1,6 @@
 from django.shortcuts import render, get_object_or_404
 from .models import Vehicle
+from .models import Favourite
 from django.db.models import Q, Value
 from django.db.models.functions import Concat
 from .forms import VehicleForm
@@ -9,6 +10,8 @@ from django.contrib import messages
 from django.shortcuts import redirect
 from django.core.paginator import Paginator
 from django.contrib.admin.views.decorators import staff_member_required
+from django.contrib.auth.decorators import login_required
+
 
 
 # Create your views here.
@@ -27,13 +30,18 @@ def search(request):
             combined=Concat("make", Value(" "), "model", Value(" "), "trim")
         ).filter(combined__icontains=query)
 
+    favourites = []
+    if request.user.is_authenticated:
+        # Get all the user's favourites, and get a list of vehicle ids
+        favourites = Favourite.objects.filter(user=request.user).values_list("vehicle_id", flat=True)
+    
     # Pagination: Show 16 vehicles per page
     paginator = Paginator(vehicles, 16)
     page_number = request.GET.get("page")
     vehicles_page = paginator.get_page(page_number)
     
     # Update the client with matches found and display them on the search page
-    return render(request, "search.html", {"vehicles": vehicles_page, "query": query})
+    return render(request, "search.html", {"vehicles": vehicles_page, "query": query, "favourites": favourites})
 
 def filter(request):
     """Filters vehicles based on request parameters."""
@@ -147,3 +155,17 @@ def delete(request, id):
         return redirect("/")
     # If a POST request was not sent, re-render the vehicle's detail page
     return render(request, "details.html", {"vehicle": vehicle})
+
+@login_required
+def toggle_favourite(request, id):
+    """Adds or remove vehicle from user's favourites list"""
+    vehicle = get_object_or_404(Vehicle, id=id)
+
+    # Tries to fetch, if database entry doesnt exist create new favourite
+    favourite, isCreated = Favourite.objects.get_or_create(user=request.user, vehicle=vehicle)
+    if not isCreated:
+        # Already favourited, so remove
+        favourite.delete()
+
+    # Returns to same page
+    return redirect(request.META.get("HTTP_REFERER", ""))

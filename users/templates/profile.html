@@ -19,4 +19,10 @@
 </form>
 {% endif %}
 
+
+<div class="row">
+    {% for vehicle in favourites %}
+    {% include "_vehicle_card.html" %}
+    {% endfor %}
+</div>
 {% endblock content%}
