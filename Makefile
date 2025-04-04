@@ -27,6 +27,13 @@ import_data:
 	@echo "from import_csv import import_csv; import_csv()" | $(PYTHON) manage.py shell
 	@python -c "print('$(GREEN)Importing complete.$(RESET)')"
 
+# Add image files
+.PHONY: import_images
+import_images:
+	@python -c "print('$(GREEN)Importing images.. $(RESET)')"
+	@echo "from add_images import add_images; add_images()" | $(PYTHON) manage.py shell
+	@python -c "print('$(GREEN)Importing complete.$(RESET)')"
+
 
 # Create a superuser for admin panel
 .PHONY: admin
@@ -34,7 +41,7 @@ admin:
 	@python -c "print('$(GREEN)Creating admin..$(RESET)')"
 	@echo "from create_admin import create_admin; create_admin()" | $(PYTHON) manage.py shell
 
-# Run application on dev server
+# Run application on dev serverS
 .PHONY: run
 run:
 	@python -c "print('$(GREEN)Running server..$(RESET)')"
