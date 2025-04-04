@@ -7,6 +7,12 @@
             {% else %}
                 <img class="card-img-top main-veh-image" src="/media/assets/x6m.png" alt="No Image Available">
             {% endif %}
+            <style>
+                .image-container {
+                    background-color: #333;
+                    color: white;
+                }
+            </style>
         </div> 
         <div class="card-body">
             <div>
@@ -18,11 +24,28 @@
                             <a href="{% url 'toggle_favourite' vehicle.id %}"><i class="fa-regular fa-star fav-icon"></i></a>
                         {% endif %}
                     {% endif %}
+                    <style>
+                        .vehicle-title {
+                            color: white;
+                        }
+                    </style>
                     
                 </div>
                 <p class="card-text">Trim: {{ vehicle.trim }}<br>${{ vehicle.price|intcomma }}</p>
+                <style>
+                    .card-text {
+                        color: white;
+                    }
+                </style>
             </div>
             <a href="{% url 'details' vehicle.id %}" class="btn btn-outline-primary vehicle-info-btn mt-3">View Details</a>
+            <style>
+                .card-body{
+                    background-color: #333; /* Dark Grey */
+                    color: white; /* White Text */
+                }
+                
+            </style>
         </div>
     </div>
 </div>

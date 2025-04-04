@@ -1,19 +1,32 @@
 {% extends 'base.html' %}
 
 {% block content %}
+<style>
+    body {
+        background: rgb(0,0,0);
+        background: linear-gradient(180deg, rgba(0,0,0,1) 0%, rgba(3,0,65,1) 90%, rgba(1,0,255,1) 100%);
+    }
+</style>
 
 <h2 class="profile-header">Welcome, {{user.username}}</h2>
 
 {% if not user.is_staff %}
-<form method="POST", action = {% url "request_admin" %}>
+<form method="POST", action = "{% url 'request_admin' %}" style="padding: 15px;">
     {% csrf_token %}
     <button type="submit" class="btn btn-primary">Request Admin</button>
 </form>
 {% endif %}
 
 
-{% if user.is_staff %}
+<!-- {% if user.is_staff %}
 <form method="POST", action = {% url "remove_admin" %}>
+    {% csrf_token %}
+    <button type="submit" class="btn btn-danger">Remove Admin</button>
+</form>
+{% endif %} -->
+
+{% if user.is_staff %}
+<form method="POST" action="{% url 'remove_admin' %}" style="padding: 15px;">
     {% csrf_token %}
     <button type="submit" class="btn btn-danger">Remove Admin</button>
 </form>
