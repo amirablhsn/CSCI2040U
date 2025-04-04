@@ -25,4 +25,32 @@
     {% include "_vehicle_card.html" %}
     {% endfor %}
 </div>
+{% with request.GET.dict as get_params %}
+<nav>
+    <ul class="pagination">
+        {% if favourites.has_previous %}
+            <li class="page-item">
+                <a class="page-link" href="?page=1{% for key, value in get_params.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}">First</a>
+            </li>
+            <li class="page-item">
+                <a class="page-link" href="?page={{ favourites.previous_page_number }}{% for key, value in get_params.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}">Previous</a>
+            </li>
+        {% endif %}
+
+        <li class="page-item disabled">
+            <a class="page-link">Page {{ favourites.number }} of {{ favourites.paginator.num_pages }}</a>
+        </li>
+
+        {% if favourites.has_next %}
+            <li class="page-item">
+                <a class="page-link" href="?page={{ favourites.next_page_number }}{% for key, value in get_params.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}">Next</a>
+            </li>
+            <li class="page-item">
+                <a class="page-link" href="?page={{ favourites.paginator.num_pages }}{% for key, value in get_params.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}">Last</a>
+            </li>
+        {% endif %}
+    </ul>
+</nav>
+{% endwith %}
+
 {% endblock content%}

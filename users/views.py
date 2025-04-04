@@ -4,6 +4,7 @@ from django.contrib.auth import login, authenticate, logout
 from .forms import LoginForm, RegisterForm
 from django.contrib.auth.decorators import login_required
 from catalogue.models import Favourite
+from django.core.paginator import Paginator
 
 
 # Create your views here.
@@ -63,8 +64,15 @@ def profile_view(request):
         favourites.append(entry.vehicle)
         ids.append(entry.vehicle.id)
 
+
+    # Pagination: Show 16 vehicles per page
+    paginator = Paginator(favourites, 16)
+    page_number = request.GET.get("page")
+    favourites_page = paginator.get_page(page_number)
+
+
     # Send favourites to user profile page for display
-    return render(request, "profile.html", {"favourites": favourites,  "ids": ids})
+    return render(request, "profile.html", {"favourites": favourites_page,  "ids": ids})
 
 @login_required(login_url="/users/login")
 def request_admin(request):
